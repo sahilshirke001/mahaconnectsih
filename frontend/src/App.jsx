@@ -1,6 +1,12 @@
 import "./App.css";
 import { Routes, Route, Link } from "react-router-dom";
+import Login from "./pages/Login";
 import Services from "./pages/Services";
+import ServiceDetails from "./pages/ServiceDetails";
+import AIAssistant from "./AIAssistant";
+import Tracking from "./Tracking";
+import Dashboard from "./Dashboard";
+import Application from "./Application";
 
 function Home() {
   return (
@@ -13,11 +19,16 @@ function Home() {
         </div>
 
         <div className="nav-links">
-          <Link to="/">Home</Link>
-          <Link to="/services">Services</Link>
-          <a href="#about">About</a>
-          <button className="login-btn">Login</button>
-        </div>
+  <Link to="/tracking">Track Application</Link>
+  <Link to="/dashboard">Dashboard</Link>
+  <Link to="/">Home</Link>
+  <Link to="/services">Services</Link>
+  <a href="#about">About</a>
+
+  <Link to="/login" className="login-btn">
+    Login
+  </Link>
+</div>
       </nav>
 
       {/* Hero Section */}
@@ -46,9 +57,9 @@ function Home() {
               </button>
             </Link>
 
-            <button className="secondary-btn">
-              🤖 Ask AI Assistant
-            </button>
+            <Link to="/ai-assistant" className="secondary-btn">
+  🤖 Ask AI Assistant
+</Link>
           </div>
         </div>
 
@@ -100,9 +111,9 @@ function Home() {
               Scholarships, certificates and student services.
             </p>
 
-            <Link to="/services">
-              <button>Explore →</button>
-            </Link>
+            <Link to="/services/education">
+  <button>Explore →</button>
+</Link>
           </div>
 
           <div className="service-card">
@@ -114,9 +125,9 @@ function Home() {
               Find and track important government certificates.
             </p>
 
-            <Link to="/services">
-              <button>Explore →</button>
-            </Link>
+            <Link to="/services/certificates">
+  <button>Explore →</button>
+</Link>
           </div>
 
           <div className="service-card">
@@ -142,14 +153,41 @@ function Home() {
               Access transport-related government services.
             </p>
 
-            <Link to="/services">
-              <button>Explore →</button>
-            </Link>
+            <Link to="/services/healthcare">
+  <button>Explore →</button>
+</Link>
           </div>
 
         </div>
 
       </section>
+      {/* Application Tracking */}
+<section className="tracking-preview">
+
+  <div className="tracking-preview-content">
+    <p className="tagline">APPLICATION TRACKING</p>
+
+    <h2>
+      Track your government application
+    </h2>
+
+    <p>
+      Check the status of your applications using your
+      application ID from one simple dashboard.
+    </p>
+
+    <Link to="/tracking">
+      <button className="primary-btn">
+        Track Application →
+      </button>
+    </Link>
+  </div>
+
+  <div className="tracking-preview-icon">
+    📊
+  </div>
+
+</section>
 
       {/* Why MahaConnect */}
       <section className="why-section" id="about">
@@ -225,8 +263,18 @@ function App() {
   return (
     
       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/ai-assistant" element={<AIAssistant />} />
+        <Route path="/tracking" element={<Tracking />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/application" element={<Application />} />
+        
 
         <Route path="/" element={<Home />} />
+        <Route
+  path="/services/:service"
+  element={<ServiceDetails />}
+/>
 
         <Route
           path="/services"

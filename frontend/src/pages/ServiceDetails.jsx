@@ -5,6 +5,7 @@ function ServiceDetails() {
 
   const serviceData = {
     education: {
+      id: "education",
       icon: "🎓",
       title: "Education Services",
       description:
@@ -18,6 +19,7 @@ function ServiceDetails() {
     },
 
     healthcare: {
+      id: "healthcare",
       icon: "🏥",
       title: "Healthcare Services",
       description:
@@ -31,6 +33,7 @@ function ServiceDetails() {
     },
 
     certificates: {
+      id: "certificates",
       icon: "📄",
       title: "Certificate Services",
       description:
@@ -44,6 +47,7 @@ function ServiceDetails() {
     },
 
     transport: {
+      id: "transport",
       icon: "🚗",
       title: "Transport Services",
       description:
@@ -57,6 +61,7 @@ function ServiceDetails() {
     },
 
     housing: {
+      id: "housing",
       icon: "🏠",
       title: "Housing Services",
       description:
@@ -70,6 +75,7 @@ function ServiceDetails() {
     },
 
     employment: {
+      id: "employment",
       icon: "💼",
       title: "Employment Services",
       description:
@@ -122,14 +128,16 @@ function ServiceDetails() {
             <span>✓</span>
             <p>{item}</p>
             <button
-              className="service-button"
-                onClick={() => viewService(service)}
-                >
-                View Service →
-            </button>
+  onClick={() => {
+    if (item === "Income Certificate") {
+      window.location.href = "/application";
+    }
+  }}
+>
+  Explore →
+</button>
           </div>
         ))}
-
       </div>
 
     </div>
