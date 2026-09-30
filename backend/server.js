@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+//dhbvb
 
 const connectDB = require("./db");
 const applicationRoutes = require("./routes/applicationRoutes");
