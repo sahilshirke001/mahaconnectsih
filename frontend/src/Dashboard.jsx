@@ -2,32 +2,37 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function Dashboard() {
-    const navigate = useNavigate();
-  // Store applications
+  const navigate = useNavigate();
+
   const [applications, setApplications] = useState([]);
 
-  // Load applications from localStorage
   useEffect(() => {
     const loadApplications = () => {
       try {
-        const savedApplications = localStorage.getItem("applications");
+        const savedApplications =
+          localStorage.getItem("applications");
 
         if (savedApplications) {
-          const parsedApplications = JSON.parse(savedApplications);
+          const parsedApplications =
+            JSON.parse(savedApplications);
 
           if (Array.isArray(parsedApplications)) {
             setApplications(parsedApplications);
           }
+        } else {
+          setApplications([]);
         }
       } catch (error) {
-        console.error("Could not load applications:", error);
+        console.error(
+          "Could not load applications:",
+          error
+        );
+        setApplications([]);
       }
     };
 
-    // Load when dashboard opens
     loadApplications();
 
-    // Update dashboard when a new application is submitted
     window.addEventListener(
       "applicationsUpdated",
       loadApplications
@@ -41,19 +46,16 @@ function Dashboard() {
     };
   }, []);
 
-  // Get latest applicant name
   const userName =
-  localStorage.getItem("userName") ||
-  (applications.length > 0
-    ? applications[applications.length - 1].applicant
-    : "Demo User");
+    localStorage.getItem("userName") ||
+    (applications.length > 0
+      ? applications[applications.length - 1].applicant
+      : "Citizen");
 
-  // Count approved applications
   const approvedCount = applications.filter(
     (app) => app.status === "Approved"
   ).length;
 
-  // Count pending applications
   const pendingCount = applications.filter(
     (app) =>
       app.status === "Submitted" ||
@@ -64,7 +66,7 @@ function Dashboard() {
   return (
     <div className="dashboard-page">
 
-      {/* ================= HEADER ================= */}
+      {/* HEADER */}
 
       <div className="dashboard-header">
 
@@ -78,8 +80,8 @@ function Dashboard() {
           </h1>
 
           <p>
-            Manage your government services and applications
-            from one place.
+            Manage your Maharashtra government certificate
+            applications from one place.
           </p>
         </div>
 
@@ -91,58 +93,84 @@ function Dashboard() {
       </div>
 
 
-      {/* ================= STATISTICS ================= */}
+      {/* STATISTICS */}
 
       <div className="dashboard-grid">
 
         <div className="dashboard-card">
-          <h3>📋 My Applications</h3>
 
-          <p>{applications.length}</p>
+          <h3>
+            📋 My Applications
+          </h3>
+
+          <p>
+            {applications.length}
+          </p>
 
           <span>
             Total applications
           </span>
+
         </div>
 
 
         <div className="dashboard-card">
-          <h3>⏳ Under Review</h3>
 
-          <p>{pendingCount}</p>
+          <h3>
+            ⏳ Pending
+          </h3>
+
+          <p>
+            {pendingCount}
+          </p>
 
           <span>
-            Applications pending
+            Applications in progress
           </span>
+
         </div>
 
 
         <div className="dashboard-card">
-          <h3>✅ Approved</h3>
 
-          <p>{approvedCount}</p>
+          <h3>
+            ✅ Approved
+          </h3>
+
+          <p>
+            {approvedCount}
+          </p>
 
           <span>
             Completed applications
           </span>
+
         </div>
 
       </div>
 
 
-      {/* ================= APPLICATIONS ================= */}
+      {/* APPLICATIONS */}
 
       <div className="dashboard-section">
 
         <div className="section-title">
 
-          <h2>
-            My Applications
-          </h2>
+          <div>
+            <p className="dashboard-section-label">
+              CERTIFICATE SERVICES
+            </p>
 
-          <Link to="/tracking">
-            Track All →
-          </Link>
+            <h2>
+              My Applications
+            </h2>
+          </div>
+
+          {applications.length > 0 && (
+            <Link to="/tracking">
+              Track Application →
+            </Link>
+          )}
 
         </div>
 
@@ -153,50 +181,80 @@ function Dashboard() {
 
             <div className="empty-dashboard">
 
+              <div className="empty-icon">
+                📄
+              </div>
+
               <h3>
-                📄 No applications yet
+                No applications yet
               </h3>
 
               <p>
-                You haven't submitted any applications yet.
+                You haven't submitted a government
+                certificate application yet.
               </p>
 
-              <Link to="/services">
-                Find Services →
+              <Link to="/certificates">
+                Explore Certificates →
               </Link>
 
             </div>
 
           ) : (
 
-            applications.map((application) => (
+            applications
+              .slice()
+              .reverse()
+              .map((application) => (
 
-              <div
-  className="dashboard-application"
-  key={application.id}
-  onClick={() => navigate(`/tracking?id=${application.id}`)}
-  style={{ cursor: "pointer" }}
->
+                <div
+                  className="dashboard-application"
+                  key={application.id}
+                  onClick={() =>
+                    navigate(
+                      `/tracking?id=${application.id}`
+                    )
+                  }
+                >
 
-                <div>
+                  <div className="dashboard-application-info">
 
-                  <strong>
-                    {application.service}
-                  </strong>
+                    <div className="dashboard-service-icon">
+                      📄
+                    </div>
 
-                  <span>
-                    {application.id}
+                    <div>
+
+                      <strong>
+                        {application.service}
+                      </strong>
+
+                      <span>
+                        Application ID: {application.id}
+                      </span>
+
+                      <small>
+                        {application.date}
+                      </small>
+
+                    </div>
+
+                  </div>
+
+
+                  <span
+                    className={`dashboard-status ${
+                      application.status
+                        .toLowerCase()
+                        .replaceAll(" ", "-")
+                    }`}
+                  >
+                    {application.status}
                   </span>
 
                 </div>
 
-                <span className="dashboard-status">
-                  {application.status}
-                </span>
-
-              </div>
-
-            ))
+              ))
 
           )}
 
@@ -205,7 +263,7 @@ function Dashboard() {
       </div>
 
 
-      {/* ================= QUICK ACTIONS ================= */}
+      {/* QUICK ACTIONS */}
 
       <div className="quick-actions">
 
@@ -215,27 +273,48 @@ function Dashboard() {
 
         <div className="quick-action-grid">
 
-          <Link to="/services">
-            🔎
+          <Link to="/certificates">
+
+            📄
+
             <strong>
-              Find Services
+              Certificates
             </strong>
+
+            <span>
+              Explore certificate services
+            </span>
+
           </Link>
 
 
           <Link to="/tracking">
+
             📊
+
             <strong>
               Track Application
             </strong>
+
+            <span>
+              Check application status
+            </span>
+
           </Link>
 
 
           <Link to="/ai-assistant">
+
             🤖
+
             <strong>
-              Ask AI Assistant
+              AI Assistant
             </strong>
+
+            <span>
+              Find government services
+            </span>
+
           </Link>
 
         </div>

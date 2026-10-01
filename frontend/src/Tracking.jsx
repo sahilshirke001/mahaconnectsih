@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 function Tracking() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const [trackingId, setTrackingId] = useState("");
   const [application, setApplication] = useState(null);
@@ -15,10 +16,12 @@ function Tracking() {
     const id = searchParams.get("id");
 
     if (id) {
-      setTrackingId(id);
+      const upperId = id.toUpperCase();
+
+      setTrackingId(upperId);
 
       const foundApplication = applications.find(
-        (app) => app.id === id
+        (app) => app.id === upperId
       );
 
       if (foundApplication) {
@@ -50,110 +53,248 @@ function Tracking() {
 
   return (
     <div className="tracking-page">
+
       <div className="tracking-card">
 
-        <div className="tracking-icon">📊</div>
+        {/* Header */}
 
-        <h1>Track Your Application</h1>
+        <div className="tracking-icon">
+          📊
+        </div>
 
-        <p>
-          Enter your application ID to check the current status.
+        <p className="tracking-label">
+          MAHARASHTRA GOVERNMENT
         </p>
 
+        <h1>
+          Track Income Certificate
+        </h1>
+
+        <p className="tracking-description">
+          Enter your Application ID to check the current
+          status of your Income Certificate application.
+        </p>
+
+        {/* Search */}
+
         <div className="tracking-input">
+
           <input
             type="text"
-            placeholder="Enter Application ID"
+            placeholder="Example: MH12345"
             value={trackingId}
-            onChange={(e) => setTrackingId(e.target.value)}
+            onChange={(e) =>
+              setTrackingId(e.target.value.toUpperCase())
+            }
           />
 
           <button onClick={trackApplication}>
             Track →
           </button>
+
         </div>
 
+        {/* Application Result */}
+
         {application && application !== "not-found" && (
+
           <div className="application-result">
 
-            <h2>Application Details</h2>
+            <div className="tracking-result-header">
 
-            <p>
-              <strong>Application ID:</strong>{" "}
-              {application.id}
-            </p>
+              <div>
+                <p className="result-label">
+                  APPLICATION
+                </p>
 
-            <p>
-              <strong>Service:</strong>{" "}
-              {application.service}
-            </p>
+                <h2>
+                  Income Certificate
+                </h2>
+              </div>
 
-            <p>
-              <strong>Applicant:</strong>{" "}
-              {application.applicant}
-            </p>
+              <span className="current-status">
+                {application.status}
+              </span>
 
-            <p>
-              <strong>Application Date:</strong>{" "}
-              {application.date}
-            </p>
+            </div>
 
-            <div className="status">
-              Status: {application.status}
+            {/* Basic Details */}
+
+            <div className="tracking-details-grid">
+
+              <div>
+                <span>Application ID</span>
+                <strong>{application.id}</strong>
+              </div>
+
+              <div>
+                <span>Applicant</span>
+                <strong>{application.applicant}</strong>
+              </div>
+
+              <div>
+                <span>Application Date</span>
+                <strong>{application.date}</strong>
+              </div>
+
+              <div>
+                <span>Service</span>
+                <strong>{application.service}</strong>
+              </div>
+
             </div>
 
             {/* Status Progress */}
-            <div className="status-progress">
-              {statuses.map((status, index) => {
-                const currentIndex = statuses.indexOf(
-                  application.status
-                );
 
-                return (
-                  <div
-                    key={status}
-                    className="status-wrapper"
-                  >
+            <div className="tracking-status-section">
+
+              <p className="result-label">
+                APPLICATION STATUS
+              </p>
+
+              <h3>
+                Application Progress
+              </h3>
+
+              <div className="status-progress">
+
+                {statuses.map((status, index) => {
+
+                  const currentIndex =
+                    statuses.indexOf(application.status);
+
+                  return (
                     <div
-                      className={`progress-step ${
-                        index <= currentIndex ? "active" : ""
-                      }`}
+                      key={status}
+                      className="status-wrapper"
                     >
-                      <span>{index + 1}</span>
-                      <p>{status}</p>
-                    </div>
 
-                    {index < statuses.length - 1 && (
                       <div
-                        className={`progress-line ${
-                          index < currentIndex
-                            ? "active-line"
+                        className={`progress-step ${
+                          index <= currentIndex
+                            ? "active"
                             : ""
                         }`}
-                      ></div>
-                    )}
-                  </div>
-                );
-              })}
+                      >
+
+                        <span>
+                          {index <= currentIndex
+                            ? "✓"
+                            : index + 1}
+                        </span>
+
+                        <p>{status}</p>
+
+                      </div>
+
+                      {index < statuses.length - 1 && (
+
+                        <div
+                          className={`progress-line ${
+                            index < currentIndex
+                              ? "active-line"
+                              : ""
+                          }`}
+                        />
+
+                      )}
+
+                    </div>
+                  );
+                })}
+
+              </div>
+
+            </div>
+
+            {/* Extra Details */}
+
+            <div className="tracking-extra">
+
+              <div>
+                <span>District</span>
+                <strong>
+                  {application.address?.split(",")[1]?.trim() ||
+                    "Maharashtra"}
+                </strong>
+              </div>
+
+              {application.income && (
+                <div>
+                  <span>Annual Family Income</span>
+                  <strong>
+                    ₹{application.income}
+                  </strong>
+                </div>
+              )}
+
+              {application.incomeSource && (
+                <div>
+                  <span>Income Source</span>
+                  <strong>
+                    {application.incomeSource}
+                  </strong>
+                </div>
+              )}
+
+            </div>
+
+            {/* Actions */}
+
+            <div className="tracking-actions">
+
+              <button
+                className="secondary-details-btn"
+                onClick={() => navigate("/dashboard")}
+              >
+                ← Back to Dashboard
+              </button>
+
             </div>
 
           </div>
         )}
 
+        {/* Not Found */}
+
         {application === "not-found" && (
+
           <div className="not-found">
-            ❌ Application not found. Please check your Application ID.
+
+            <div className="not-found-icon">
+              🔎
+            </div>
+
+            <h3>
+              Application Not Found
+            </h3>
+
+            <p>
+              We couldn't find an application with this ID.
+              Please check the ID and try again.
+            </p>
+
           </div>
         )}
 
-        <div className="demo-ids">
+        {/* Information */}
+
+        <div className="tracking-info">
+
           <strong>
-            Enter an Application ID generated after submitting an
-            application.
+            💡 Where can I find my Application ID?
           </strong>
+
+          <p>
+            Your Application ID is generated after you
+            successfully submit your Income Certificate
+            application.
+          </p>
+
         </div>
 
       </div>
+
     </div>
   );
 }
