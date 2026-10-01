@@ -4,6 +4,7 @@ import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import Certificates from "./pages/Certificates";
 
 import Login from "./pages/Login";
+import Services from "./pages/Services";
 
 import ServiceDetails from "./pages/ServiceDetails";
 import AIAssistant from "./AIAssistant";
